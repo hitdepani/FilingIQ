@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  filingiq-api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - CHROMA_PATH=./db
+      - DATA_PATH=./data/raw
+    volumes:
+      - ./db:/app/db
+      - ./data/raw:/app/data/raw
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
