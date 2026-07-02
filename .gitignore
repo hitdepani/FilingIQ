@@ -1,35 +1,35 @@
-# Python
+﻿# Python
 __pycache__/
 *.py[cod]
-*$py.class
+*.class
 *.so
 .Python
+
+# Virtual environments
 venv/
 ENV/
 env/
 
-# Environment
+# Environment files
 .env
 .env.local
 .env.*.local
 
-# IDEs
+# IDE/editor files
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# OS
+# OS files
 .DS_Store
 Thumbs.db
 
-# Project specific
-data/raw/*.pdf
-db/chroma.sqlite3
-*.log
-.cache/
-
-# Dependencies
+# Node
 node_modules/
-dist/
-build/
+
+# Project data
+data/raw/*.pdf
+
+# Optional local vector DB storage
+# db/

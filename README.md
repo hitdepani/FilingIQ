@@ -1,170 +1,138 @@
-# FilingIQ 📊
+# FilingIQ
 
-**Production-grade RAG system for Indian company filings**
+FilingIQ is an AI-powered retrieval-augmented generation (RAG) assistant for exploring Indian company filings, annual reports, and regulatory documents with natural-language search and source-backed answers.
 
-Query annual reports from Reliance, TCS, Infosys and SEBI regulations using AI.
+Built to make financial and compliance research faster, FilingIQ combines semantic search, citation-aware retrieval, and a lightweight web interface into a single, deployable experience.
 
-## Features
+## 1. Project Title & Description
 
-✅ **Vector Search** — Semantic search using all-MiniLM-L6-v2 embeddings  
-✅ **Reranking** — Cross-encoder reranking for precision  
-✅ **LLM Generation** — Groq LLM for natural language answers  
-✅ **Citations** — Automatic source attribution  
-✅ **REST API** — FastAPI backend  
-✅ **Cloud Ready** — Docker + AWS deployment  
+FilingIQ is a modern RAG application designed for querying structured and unstructured filings data from companies like Reliance, TCS, and Infosys, as well as SEBI regulations.
 
-## Quick Start
+It helps users ask complex questions in plain English and receive grounded responses with evidence from the indexed source documents.
 
-### Local Development
+## 2. Features
+
+- 2,735 indexed document chunks
+- Real-time RAG search over uploaded and indexed filings
+- Source citations for every generated answer
+- Clean web UI for fast interaction
+- Docker deployment ready for local and cloud use
+
+## 3. Tech Stack
+
+- Backend: FastAPI
+- Vector database: ChromaDB
+- Embeddings: Sentence Transformers
+- LLM: Groq API
+- Frontend: Vanilla HTML, CSS, and JavaScript
+
+## 4. Quick Start
+
+### Prerequisites
+
+- Python 3.12+
+- Docker
+
+### Setup
 
 ```bash
-# Clone repo
-git clone https://github.com/YOUR_USERNAME/filingiq.git
+git clone https://github.com/your-github-username/filingiq.git
 cd filingiq
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Run API
-python src/api.py
-
-# Visit http://localhost:8000/docs
 ```
 
-### Docker
+Create a `.env` file in the project root with your Groq API key:
 
-```bash
-# Build image
-docker build -t filingiq .
-
-# Run container
-docker run -p 8000:8000 -e GROQ_API_KEY=your_key filingiq
-```
-
-### Docker Compose
-
-```bash
-docker-compose up -d
-```
-
-## API Usage
-
-### Query Endpoint
-
-**POST** `/query`
-
-```bash
-curl -X POST http://localhost:8000/query \
-  -H "Content-Type: application/json" \
-  -d '{
-    "question": "What was Reliance revenue in FY2024?"
-  }'
-```
-
-**Response:**
-```json
-{
-  "answer": "Reliance's revenue in FY2024 was ₹3,06,848 Crore...",
-  "sources": [
-    {
-      "company": "Reliance Industries",
-      "year": "FY2024",
-      "page": 3,
-      "relevance": 1.57,
-      "content": "..."
-    }
-  ],
-  "chunks_used": 3
-}
-```
-
-### Health Check
-
-**GET** `/health`
-
-```bash
-curl http://localhost:8000/health
-```
-
-## Architecture
-PDFs (11)
-
-↓
-
-Ingest (parse → chunk → embed)
-
-↓
-
-ChromaDB (2735 chunks)
-
-↓
-
-API (retrieve → rerank → generate)
-
-↓
-
-Response with citations
-
-## Deployment
-
-See [aws-deployment.md](./aws-deployment.md) for AWS EC2 deployment guide.
-
-## Tech Stack
-
-- **Backend**: FastAPI, Python 3.12
-- **Embeddings**: sentence-transformers (all-MiniLM-L6-v2)
-- **Reranking**: cross-encoder (ms-marco-MiniLM-L-6-v2)
-- **Vector Store**: ChromaDB
-- **LLM**: Groq (llama-3.3-70b-versatile)
-- **Container**: Docker
-- **Cloud**: AWS EC2
-
-## Configuration
-
-Create `.env`:
+```env
 GROQ_API_KEY=your_groq_api_key_here
+```
 
-## Project Structure
-filing/
+### Run with Docker
 
-├── src/
+```bash
+docker run -p 8000:8000 -p 3000:3000 -e GROQ_API_KEY=your_key filingiq:latest
+```
 
-│   ├── api.py           # FastAPI application
+Open the app at:
 
-│   ├── ingest.py        # PDF indexing pipeline
+- http://localhost:3000
 
-│   ├── retrieve.py      # RAG retrieval logic
+## 5. Local Development
 
-│   └── verify_env.py    # Environment checker
+### Manual setup without Docker
 
-├── db/                  # ChromaDB vector store
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+```
 
-├── data/raw/            # PDF documents
+Run the API:
 
-├── config.py            # Configuration
+```bash
+uvicorn src.api:app --reload --host 0.0.0.0 --port 8000
+```
 
-├── requirements.txt     # Dependencies
+Serve the frontend:
 
-├── Dockerfile           # Docker image
+```bash
+python -m http.server 3000 --directory frontend
+```
 
-├── docker-compose.yml   # Docker Compose
+API docs will be available at:
 
-├── .github/workflows/   # CI/CD pipeline
+- http://localhost:8000/docs
 
-└── README.md           # This file
+## 6. Project Structure
 
-## Performance
+- src/api.py — FastAPI application and API routes
+- src/ingest.py — Document ingestion, chunking, and indexing pipeline
+- src/retrieve.py — Retrieval and ranking logic for RAG
+- src/verify_env.py — Environment validation helper
+- frontend/index.html — Main web interface
+- db/ — ChromaDB vector store and local data files
+- .github/workflows/ — CI/CD workflow configuration
+- Dockerfile — Container build definition
+- docker-compose.yml — Container orchestration config
+- requirements.txt — Python dependencies
+- config.py — Project configuration settings
 
-- **Chunks Indexed**: 2,735
-- **Companies**: 3 (Reliance, TCS, Infosys)
-- **Regulations**: SEBI (2015)
-- **Query Time**: ~2-3 seconds
-- **Accuracy**: High relevance for factual questions
+## 7. Performance
 
-## License
+- 2,735 chunks indexed
+- Query response time of approximately 2–3 seconds
+- Content coverage includes Reliance, TCS, Infosys, and SEBI regulations
 
-MIT
+## 8. Future Roadmap
 
-## Author
+- User authentication and role-based access
+- Multi-turn conversational follow-ups
+- Export results to PDF or DOCX
+- Advanced filtering by company, year, and document type
+- Analytics dashboard for usage and retrieval insights
 
-Built with ❤️ for learning RAG systems
+## 9. API Endpoints
+
+- POST /chat — Main chat endpoint for natural-language Q&A
+- POST /query — Debug endpoint with similarity scores and retrieval details
+- GET /health — Health check endpoint
+- GET /docs — Swagger UI for interactive API exploration
+
+## 10. Contributing
+
+To add new documents:
+
+1. Place your PDFs in the data/raw directory.
+2. Run the ingestion pipeline:
+
+```bash
+python src/ingest.py
+```
+
+This will process the new documents and update the vector store for retrieval.
+
+## 11. License & Author
+
+- License: MIT
+- Author: Hit Depani
+- GitHub: https://github.com/hitdepani
+- Linkedin: https://www.linkedin.com/in/hit-depani-3b0698367/
